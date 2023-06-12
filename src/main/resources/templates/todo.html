@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TODO LIST</title>
+    <style>
+        ul li {
+            display: inline;
+        }
+        #form1, #form2, #form3, #form4 {
+            display: inline;
+        }
+    </style>
+</head>
+<body>
+<h1>TODO LIST</h1>
+
+<form action="/todo/create" method="post">
+    <label for="todo-desc">
+        TODO : <input type="text" id="todo-desc" name="content" placeholder="enter a todo">
+    </label>
+    <input type="submit" value="CREATE">
+</form>
+
+<!-- 완료된 할 일, done == true -->
+<div th:each="todo : ${todos}" th:if="${todo.done}">
+    <ul>
+        <li>[[${todo.content}]] [DONE]</li>
+        <form id="form1" th:action="@{/todo/{id}/update (id=${todo.id})}" method="post">
+            <input type="submit" value="CANCEL">
+        </form>
+        <form id="form2" th:action="@{/todo/{id}/delete (id=${todo.id})}" method="post">
+            <input type="submit" value="DELETE">
+        </form>
+    </ul>
+</div>
+
+<!-- 완료되지 않은 할 일, done == false -->
+<div th:each="todo : ${todos}" th:unless="${todo.done}">
+    <ul>
+        <li>[[${todo.content}]]</li>
+        <form id="form3" th:action="@{/todo/{id}/update (id=${todo.id})}" method="post">
+            <input type="submit" value="DONE">
+        </form>
+        <form id="form4" th:action="@{/todo/{id}/delete (id=${todo.id})}" method="post">
+            <input type="submit" value="DELETE">
+        </form>
+    </ul>
+</div>
+
+</body>
+</html>
