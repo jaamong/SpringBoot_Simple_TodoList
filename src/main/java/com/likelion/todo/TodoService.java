@@ -25,16 +25,17 @@ public class TodoService {
     }
 
     public boolean updateTodoDone(Long id) {
-        TodoDto todoDto = store.stream()
-                .filter(o -> o.getId().equals(id))
+        return store.stream()
+                .filter(todoDto -> todoDto.getId().equals(id))
                 .findFirst()
-                .orElse(null);
-
-        if (todoDto != null) {
-            todoDto.setDone(!todoDto.getDone());
-            return true;
-        }
-        return false;
+                .map(
+                        todoDto -> {
+                            todoDto.setDone(!todoDto.getDone());
+                            return true;
+                        })
+                .orElseGet(() -> {
+                    return false;
+                });
     }
 
     public boolean deleteTodo(Long id) {
