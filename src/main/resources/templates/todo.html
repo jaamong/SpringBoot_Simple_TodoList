@@ -8,29 +8,40 @@
         ul li {
             display: inline;
         }
-        #form1, #form2, #form3, #form4 {
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
+        }
+        #form1, #form2, #form3, #form4, #form5, #form6 {
             display: inline;
         }
+
     </style>
 </head>
 <body>
 <h1>TODO LIST</h1>
 
-<form action="/todo/create" method="post">
+<!-- create TO-DO -->
+<form th:action="@{/todos}" th:object="${todo}" method="post">
     <label for="todo-desc">
-        TODO : <input type="text" id="todo-desc" name="content" placeholder="enter a todo">
+        TODO : <input type="text" id="todo-desc" name="content" placeholder="enter a todo"
+                      th:field="*{content}" th:errorclass="field-error">
     </label>
     <input type="submit" value="CREATE">
+    <div class="field-error" th:errors="*{content}">todo content error</div>
 </form>
 
 <!-- 완료된 할 일, done == true -->
 <div th:each="todo : ${todos}" th:if="${todo.done}">
     <ul>
         <li>[[${todo.content}]] [DONE]</li>
-        <form id="form1" th:action="@{/todo/{id}/update (id=${todo.id})}" method="post">
+        <form id="form1" th:action="@{/todos/{id}/done (id=${todo.id})}" th:method="put">
             <input type="submit" value="CANCEL">
         </form>
-        <form id="form2" th:action="@{/todo/{id}/delete (id=${todo.id})}" method="post">
+        <form id="form5" th:action="@{/todos/{id}/content (id=${todo.id})}" th:method="put">
+            <input type="submit" value="EDIT">
+        </form>
+        <form id="form2" th:action="@{/todos/{id} (id=${todo.id})}" th:method="delete">
             <input type="submit" value="DELETE">
         </form>
     </ul>
@@ -40,13 +51,23 @@
 <div th:each="todo : ${todos}" th:unless="${todo.done}">
     <ul>
         <li>[[${todo.content}]]</li>
-        <form id="form3" th:action="@{/todo/{id}/update (id=${todo.id})}" method="post">
+        <form id="form3" th:action="@{/todos/{id}/done (id=${todo.id})}" th:method="put">
             <input type="submit" value="DONE">
         </form>
-        <form id="form4" th:action="@{/todo/{id}/delete (id=${todo.id})}" method="post">
+        <form id="form6" th:action="@{/todos/{id}/content (id=${todo.id})}" th:method="put">
+            <input type="submit" value="EDIT">
+        </form>
+        <form id="form4" th:action="@{/todos/{id} (id=${todo.id})}" th:method="delete">
             <input type="submit" value="DELETE">
         </form>
     </ul>
+</div>
+
+
+<!-- Content 변경 -->
+<div>
+
+
 </div>
 
 </body>
