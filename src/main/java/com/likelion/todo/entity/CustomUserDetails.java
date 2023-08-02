@@ -114,4 +114,12 @@ public class CustomUserDetails implements UserDetails {
     public void updateAuthorities(Set<Role> authorities) {
         this.authorities = authorities;
     }
+
+    @Override
+    public String toString() {
+        return "CustomUserDetails{" +
+                "username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

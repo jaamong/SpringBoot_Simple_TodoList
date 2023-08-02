@@ -35,6 +35,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        log.info("[JwtTokenFilter] doFilterInternal() start");
+
         //JWT가 포함되어 있으면 포함되어 있는 헤더 요청
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -65,7 +67,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         } else
             log.warn("[JwtTokenFilter] JWT validation failed in doFilterInternal()");
-
         filterChain.doFilter(request, response);
     }
 }

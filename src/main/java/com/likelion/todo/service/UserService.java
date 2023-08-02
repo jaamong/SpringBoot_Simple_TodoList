@@ -1,6 +1,6 @@
 package com.likelion.todo.service;
 
-import com.likelion.todo.dto.UserAuthRequestDto;
+import com.likelion.todo.dto.UserLoginRequestDto;
 import com.likelion.todo.entity.CustomUserDetails;
 import com.likelion.todo.entity.Role;
 import com.likelion.todo.repository.RoleRepository;
@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
                 .build());
     }
 
-    public CustomUserDetails validateUser(UserAuthRequestDto dto) {
+    public CustomUserDetails validateUser(UserLoginRequestDto dto) {
 
         //존재하는 사용자인지
         UserDetails userDetails = loadUserByUsername(dto.getUsername());
@@ -70,13 +70,19 @@ public class UserService implements UserDetailsService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
 
         return CustomUserDetails.builder()
+                .id(loadUserIdByUsername(dto.getUsername()))
                 .username(dto.getUsername())
                 .password(dto.getPassword())
-                .email(dto.getEmail())
                 .build();
     }
 
     private boolean existsByUsername(String username) {
         return userRepository.findByUsername(username).isPresent();
+    }
+
+    private Long loadUserIdByUsername(String username) {
+        CustomUserDetails user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(username + " is not valid"));
+        return user.getId();
     }
 }

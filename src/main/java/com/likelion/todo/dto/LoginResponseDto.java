@@ -12,4 +12,12 @@ public class LoginResponseDto {
 
     private CustomUserDetails user;
     private String token;
+
+    @Override
+    public String toString() {
+        return "LoginResponseDto{" +
+                "user=" + user +
+                ", token='" + token + '\'' +
+                '}';
+    }
 }
