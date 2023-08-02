@@ -1,74 +1,114 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>TODO LIST</title>
-    <style>
-        ul li {
-            display: inline;
-        }
-        .field-error {
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-        #form1, #form2, #form3, #form4, #form5, #form6 {
-            display: inline;
-        }
-
-    </style>
+    <title>TodoList</title>
 </head>
+
 <body>
 <h1>TODO LIST</h1>
 
-<!-- create TO-DO -->
-<form th:action="@{/todos}" th:object="${todo}" method="post">
-    <label for="todo-desc">
-        TODO : <input type="text" id="todo-desc" name="content" placeholder="enter a todo"
-                      th:field="*{content}" th:errorclass="field-error">
-    </label>
-    <input type="submit" value="CREATE">
-    <div class="field-error" th:errors="*{content}">todo content error</div>
+<form id="create">
+    <label for="todo">TODO : </label>
+    <input type="text" id="todo" name="content" placeholder="enter a todo">
+    <input type="submit" id="submit" value="CREATE">
 </form>
 
 <!-- 완료된 할 일, done == true -->
-<div th:each="todo : ${todos}" th:if="${todo.done}">
-    <ul>
-        <li>[[${todo.content}]] [DONE]</li>
-        <form id="form1" th:action="@{/todos/{id}/done (id=${todo.id})}" th:method="put">
-            <input type="submit" value="CANCEL">
-        </form>
-        <form id="form5" th:action="@{/todos/{id}/content (id=${todo.id})}" th:method="put">
-            <input type="submit" value="EDIT">
-        </form>
-        <form id="form2" th:action="@{/todos/{id} (id=${todo.id})}" th:method="delete">
-            <input type="submit" value="DELETE">
-        </form>
-    </ul>
+<div>
+    <ul id="doneTrue"></ul>
+    <input type="submit" id="doneTrueCancel" value="CANCEL">
+    <input type="submit" id="doneTrueEdit" value="EDIT">
+    <input type="submit" id="doneTrueDelete" value="DELETE">
 </div>
 
 <!-- 완료되지 않은 할 일, done == false -->
-<div th:each="todo : ${todos}" th:unless="${todo.done}">
-    <ul>
-        <li>[[${todo.content}]]</li>
-        <form id="form3" th:action="@{/todos/{id}/done (id=${todo.id})}" th:method="put">
-            <input type="submit" value="DONE">
-        </form>
-        <form id="form6" th:action="@{/todos/{id}/content (id=${todo.id})}" th:method="put">
-            <input type="submit" value="EDIT">
-        </form>
-        <form id="form4" th:action="@{/todos/{id} (id=${todo.id})}" th:method="delete">
-            <input type="submit" value="DELETE">
-        </form>
-    </ul>
-</div>
-
-
-<!-- Content 변경 -->
 <div>
-
-
+    <ul id="doneFalse"></ul>
+    <input type="submit" id="doneFalseCancel" value="CANCEL">
+    <input type="submit" id="doneFalseEdit" value="EDIT">
+    <input type="submit" id="doneFalseDelete" value="DELETE">
 </div>
 
+<script>
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+
+        document.getElementById('create').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const newTodo = document.getElementById('todo').value;
+            if (newTodo === '') return 'fill in the blank'
+
+            console.log(newTodo)
+
+            try {
+                const createResponse = await fetch(`/todos`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({
+                        content: newTodo,
+                        done: false
+                    })
+                })
+
+                if (!createResponse.ok) {
+                    const ReadAllResponseBody = await ReadAllResponse.json();
+                    alert(ReadAllResponseBody.message)
+                    return
+                }
+            } catch (error) {
+                console.log(error.message)
+            }
+        })
+
+        function readAll() {
+            try {
+                const readList = fetch(`/todos/${userId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+
+                console.log(readList)
+
+                for (let key in readList) {
+                    const li = document.createElement('li');
+                    const textNode = document.createTextNode(key.content);
+                    li.appendChild(textNode);
+
+                    if (key.done === true)
+                        document.getElementById('doneTrue').appendChild(li);
+                    else
+                        document.getElementById('doneFalse').appendChild(li);
+                }
+            } catch (error) {
+                console.log(error.message)
+            }
+        }
+
+        try {
+            document.addEventListener('doneTrueCancel', async (event) => {
+                event.preventDefault();
+
+                const cancelResponse = fetch(`/${userId}/done`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
+            })
+        } catch (error) {
+            console.log(error.message)
+        }
+    </script>
 </body>
+
 </html>

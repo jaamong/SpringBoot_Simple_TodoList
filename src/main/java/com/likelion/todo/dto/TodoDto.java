@@ -22,4 +22,12 @@ public class TodoDto {
         dto.setDone(todo.getDone());
         return dto;
     }
+
+    @Override
+    public String toString() {
+        return "TodoDto{" +
+                "content='" + content + '\'' +
+                ", done=" + done +
+                '}';
+    }
 }

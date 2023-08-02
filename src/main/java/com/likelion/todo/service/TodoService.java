@@ -38,8 +38,8 @@ public class TodoService {
         return TodoDto.from(todo);
     }
 
-    public List<TodoDto> findAll() {
-        return todoRepository.findAll()
+    public List<TodoDto> findAll(Long id) {
+        return todoRepository.findAllByUserId(id)
                 .stream()
                 .map(TodoDto::from)
                 .toList();

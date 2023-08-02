@@ -5,74 +5,65 @@ import com.likelion.todo.dto.TodoSaveDto;
 import com.likelion.todo.dto.TodoDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.ResponseEntity.HeadersBuilder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/todos")
 @RequiredArgsConstructor
 public class TodoController {
 
     private final TodoService todoService;
 
-    @GetMapping("/home")
-    public String homeView(Model model) {
+    @GetMapping("/{id}")
+    public ResponseEntity<List<TodoDto>> readAll(@PathVariable("id") Long id,
+                                                 @RequestHeader("Authorization") String token) {
 
-        model.addAttribute("todo", new TodoDto());
-        model.addAttribute("todos", todoService.findAll());
+        log.info("[readAll] jwt token : {}", token);
+        List<TodoDto> todoList = todoService.findAll(id);
+        log.info(todoList.toString());
 
-        return "todo";
+        return ResponseEntity.ok(todoList);
     }
 
     @PostMapping
-    public String create(@Validated @ModelAttribute("todo") TodoSaveDto form,
-                         BindingResult bindingResult,
-                         Principal principal) {
+    public ResponseEntity<TodoDto> create(@RequestHeader("Authorization") String token,
+                                          @RequestBody TodoSaveDto dto,
+                                          Principal principal) {
 
-        //검증 실패 시 다시 첫 화면으로
-        if (bindingResult.hasErrors()) {
-            log.info("errors = {}", bindingResult);
-            return "todo";
-        }
+        log.info("TodoSaveDto : {}, {}", dto.getContent(), dto.getDone());
+        TodoDto todo = todoService.createTodo(dto, principal.getName());
+        log.info("todoDto : {}", todo.toString());
 
-        //성공 로직
-        TodoDto todo = todoService.createTodo(form, principal.getName());
-        log.info("todoDto : {}", todo);
-
-        return "redirect:/todo/home";
+        return ResponseEntity.ok(todo);
     }
 
     @PutMapping("/{id}/done")
-    public String updateDone(@PathVariable("id") Long id) {
+    public HeadersBuilder<?> updateDone(@PathVariable("id") Long id,
+                                        @RequestHeader("Authorization") String token) {
         todoService.updateTodoDone(id);
-        return "redirect:/todo/home";
+        return ResponseEntity.noContent();
     }
 
     @PutMapping("/{id}/content")
-    public String updateContent(@PathVariable("id") Long id,
-                                @Validated @ModelAttribute("todoDto") TodoSaveDto form,
-                                BindingResult bindingResult) {
+    public HeadersBuilder<?> updateContent(@PathVariable("id") Long id,
+                                           @RequestBody TodoSaveDto dto,
+                                           @RequestHeader("Authorization") String token) {
 
-        //검증 실패 시 다시 첫 화면으로
-        if (bindingResult.hasErrors()) {
-            log.info("errors = {}", bindingResult);
-            return "todo";
-        }
-
-        //성공 로직
-        todoService.updateTodoContent(id, form.getContent());
-        return "redirect:/todo/home";
+        todoService.updateTodoContent(id, dto.getContent());
+        return ResponseEntity.noContent();
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") Long id) {
+    public HeadersBuilder<?> delete(@PathVariable("id") Long id,
+                                    @RequestHeader("Authorization") String token) {
         todoService.deleteTodo(id);
-        return "redirect:/todo/home";
+        return ResponseEntity.noContent();
     }
 }
