@@ -46,24 +46,27 @@ public class TodoService {
     }
 
     @Transactional
-    public void updateTodoDone(Long id) {
-        Todo todo = getTodoById(id);
+    public void updateTodoDone(Long userId, Long todoId) {
+        Todo todo = getTodoById(userId, todoId);
         todo.updateDone(!todo.getDone());
     }
 
     @Transactional
-    public void updateTodoContent(Long id, String content) {
-        Todo todo = getTodoById(id);
+    public void updateTodoContent(Long userId, Long todoId, String content) {
+        Todo todo = getTodoById(userId, todoId);
         todo.updateContent(content);
     }
 
-    public void deleteTodo(Long id) {
-        Todo todo = getTodoById(id);
+    public void deleteTodo(Long userId, Long todoId) {
+        Todo todo = getTodoById(userId, todoId);
         todoRepository.delete(todo);
     }
 
-    private Todo getTodoById(Long id) {
-        return todoRepository.findById(id)
+    private Todo getTodoById(Long userId, Long todoId) {
+        return todoRepository.findAllByUserId(userId)
+                .stream()
+                .filter(t -> t.getId().equals(todoId))
+                .findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

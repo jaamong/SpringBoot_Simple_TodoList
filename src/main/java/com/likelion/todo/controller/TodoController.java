@@ -15,18 +15,18 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/todos")
+@RequestMapping("/users/{userId}/todos")
 @RequiredArgsConstructor
 public class TodoController {
 
     private final TodoService todoService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<List<TodoDto>> readAll(@PathVariable("id") Long id,
+    @GetMapping
+    public ResponseEntity<List<TodoDto>> readAll(@PathVariable("userId") Long userId,
                                                  @RequestHeader("Authorization") String token) {
 
         log.info("[readAll] jwt token : {}", token);
-        List<TodoDto> todoList = todoService.findAll(id);
+        List<TodoDto> todoList = todoService.findAll(userId);
         log.info(todoList.toString());
 
         return ResponseEntity.ok(todoList);
@@ -35,6 +35,7 @@ public class TodoController {
     @PostMapping
     public ResponseEntity<TodoDto> create(@RequestHeader("Authorization") String token,
                                           @RequestBody TodoSaveDto dto,
+                                          @PathVariable("userId") Long userId, //안쓰는데 url에 있어서 받아온 것. todo : 나중에 Principal 대신 사용
                                           Principal principal) {
 
         log.info("TodoSaveDto : {}, {}", dto.getContent(), dto.getDone());
@@ -44,26 +45,29 @@ public class TodoController {
         return ResponseEntity.ok(todo);
     }
 
-    @PutMapping("/{id}/done")
-    public HeadersBuilder<?> updateDone(@PathVariable("id") Long id,
+    @PutMapping("/{todoId}/done")
+    public HeadersBuilder<?> updateDone(@PathVariable("userId") Long userId,
+                                        @PathVariable("todoId") Long todoId,
                                         @RequestHeader("Authorization") String token) {
-        todoService.updateTodoDone(id);
+        todoService.updateTodoDone(userId, todoId);
         return ResponseEntity.noContent();
     }
 
-    @PutMapping("/{id}/content")
-    public HeadersBuilder<?> updateContent(@PathVariable("id") Long id,
+    @PutMapping("/{todoId}/content")
+    public HeadersBuilder<?> updateContent(@PathVariable("userId") Long userId,
+                                           @PathVariable("todoId") Long todoId,
                                            @RequestBody TodoSaveDto dto,
                                            @RequestHeader("Authorization") String token) {
 
-        todoService.updateTodoContent(id, dto.getContent());
+        todoService.updateTodoContent(userId, todoId, dto.getContent());
         return ResponseEntity.noContent();
     }
 
-    @DeleteMapping("/{id}")
-    public HeadersBuilder<?> delete(@PathVariable("id") Long id,
+    @DeleteMapping("/{todoId}")
+    public HeadersBuilder<?> delete(@PathVariable("userId") Long userId,
+                                    @PathVariable("todoId") Long todoId,
                                     @RequestHeader("Authorization") String token) {
-        todoService.deleteTodo(id);
+        todoService.deleteTodo(userId, todoId);
         return ResponseEntity.noContent();
     }
 }
