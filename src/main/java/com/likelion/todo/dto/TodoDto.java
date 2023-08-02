@@ -26,7 +26,8 @@ public class TodoDto {
     @Override
     public String toString() {
         return "TodoDto{" +
-                "content='" + content + '\'' +
+                "id=" + id +
+                ", content='" + content + '\'' +
                 ", done=" + done +
                 '}';
     }
