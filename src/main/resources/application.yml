@@ -25,6 +25,9 @@ spring:
       filter:
         enabled: true
 
+  thymeleaf:
+    suffix: .html
+    cache: false
 jwt:
   secretKey: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesasdfqve
 
