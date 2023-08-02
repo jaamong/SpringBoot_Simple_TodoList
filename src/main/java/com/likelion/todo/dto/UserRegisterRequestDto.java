@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class UserAuthRequestDto {
+public class UserRegisterRequestDto {
 
     @NotBlank(message = "enter your account's username")
     private String username;
@@ -21,8 +21,8 @@ public class UserAuthRequestDto {
     @NotBlank(message = "enter your account's email")
     private String email;
 
-    public static UserAuthRequestDto from(CustomUserDetails user) {
-        UserAuthRequestDto dto = new UserAuthRequestDto();
+    public static UserRegisterRequestDto from(CustomUserDetails user) {
+        UserRegisterRequestDto dto = new UserRegisterRequestDto();
         dto.setUsername(user.getUsername());
         dto.setPassword(user.getPassword());
         dto.setEmail(user.getEmail());
