@@ -16,25 +16,26 @@
 </form>
 
 <!-- 완료된 할 일, done == true -->
-<div>
-    <ul id="doneTrue"></ul>
-    <input type="submit" id="doneTrueCancel" value="CANCEL">
-    <input type="submit" id="doneTrueEdit" value="EDIT">
-    <input type="submit" id="doneTrueDelete" value="DELETE">
-</div>
+<div id="todoList">
+    <div>
+        <ul id="doneTrue"></ul>
+    </div>
 
-<!-- 완료되지 않은 할 일, done == false -->
-<div>
-    <ul id="doneFalse"></ul>
-    <input type="submit" id="doneFalseCancel" value="CANCEL">
-    <input type="submit" id="doneFalseEdit" value="EDIT">
-    <input type="submit" id="doneFalseDelete" value="DELETE">
+    <!-- 완료되지 않은 할 일, done == false -->
+    <div>
+        <ul id="doneFalse"></ul>
+    </div>
 </div>
 
 <script>
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
 
+        let todoId = 0;
+
+        readAll(); //페이지 첫 로드 시에만 호출, 그 이후로는 싱글 호출
+
+        //새로운 todo 생성
         document.getElementById('create').addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -44,7 +45,7 @@
             console.log(newTodo)
 
             try {
-                const createResponse = await fetch(`/todos`, {
+                const createResponse = await fetch(`/users/${userId}/todos`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -56,57 +57,128 @@
                     })
                 })
 
+                const todoDto = await createResponse.json();
+                console.log(todoDto)
+
+                todoId = todoDto.id;
+
                 if (!createResponse.ok) {
                     const ReadAllResponseBody = await ReadAllResponse.json();
                     alert(ReadAllResponseBody.message)
                     return
                 }
+
+                //생성하고 생성한 todo 불러오기
+                createli(todoDto);
+
             } catch (error) {
                 console.log(error.message)
             }
         })
 
-        function readAll() {
-            try {
-                const readList = fetch(`/todos/${userId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    }
-                })
+        //todo done : done false -> true
+        const oneTodoId = document.getElementById('oneTodo');
 
-                console.log(readList)
+        if (oneTodoId) {
+            oneTodoId.addEventListener('doneSubmit', async (event) => {
+                event.preventDefault();
 
-                for (let key in readList) {
-                    const li = document.createElement('li');
-                    const textNode = document.createTextNode(key.content);
-                    li.appendChild(textNode);
+                console.log(userId);
+                console.log(todoId);
 
-                    if (key.done === true)
-                        document.getElementById('doneTrue').appendChild(li);
-                    else
-                        document.getElementById('doneFalse').appendChild(li);
+                updateDone()
+            })
+        }
+
+        //todo done 취소 : done true -> false
+        if (oneTodoId) {
+            oneTodoId.addEventListener('doneCancelSubmit', async (event) => {
+                event.preventDefault();
+
+                console.log(userId);
+                console.log(todoId);
+
+                updateDone()
+            })
+        }
+
+        //모든 todo 불러오기
+        async function readAll() {
+            const promise = await fetch(`/users/${userId}/todos`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
                 }
-            } catch (error) {
-                console.log(error.message)
+            })
+
+            const contentList = await promise.json();
+            console.log(contentList);
+
+            for (let key of contentList) {
+                const li = document.createElement('li');
+                const textNode = document.createTextNode(key.content);
+                li.appendChild(textNode);
+
+                if (key.done === true)
+                    document.getElementById('doneTrue').appendChild(li);
+                else
+                    document.getElementById('doneFalse').appendChild(li);
             }
         }
 
-        try {
-            document.addEventListener('doneTrueCancel', async (event) => {
-                event.preventDefault();
+        //만든 todo를 li 태그로 추가하기 + input 태그
+        async function createli(todoDto) {
 
-                const cancelResponse = fetch(`/${userId}/done`, {
+            let li = document.createElement('li');
+            li.setAttribute("id", "oneTodo")
+            const textNode = document.createTextNode(todoDto.content);
+            li.appendChild(textNode);
+
+            const inputCancel = document.createElement('input');
+            inputCancel.setAttribute("type", "submit");
+
+            const inputEdit = document.createElement('input');
+            inputEdit.setAttribute("type", "submit");
+            inputEdit.setAttribute("value", "EDIT");
+            inputEdit.setAttribute("id", "editSubmit")
+
+            const inputDelete = document.createElement('input');
+            inputDelete.setAttribute("type", "submit");
+            inputDelete.setAttribute("value", "DELETE");
+            inputDelete.setAttribute("id", "deleteSubmit")
+
+            if (todoDto.done === true) { //완료된 일
+                inputCancel.setAttribute("value", "CANCEL");
+                inputCancel.setAttribute("id", "doneCancelSubmit");
+                li.append(inputCancel);
+                li.append(inputEdit);
+                li.append(inputDelete);
+
+                document.getElementById('doneTrue').appendChild(li);
+            } else { //todoDto.done === false
+                inputCancel.setAttribute("value", "DONE");
+                inputCancel.setAttribute("id", "doneSubmit");
+                li.append(inputCancel);
+                li.append(inputEdit);
+                li.append(inputDelete);
+
+                document.getElementById('doneFalse').appendChild(li);
+            }
+        }
+
+        async function updateDone() {
+            try {
+                const cancelResponse = await fetch(`/users/${userId}/todos/${todoId}/done`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                         'Authorization': 'Bearer ' + token
                     }
                 })
-            })
-        } catch (error) {
-            console.log(error.message)
+            } catch (error) {
+                console.log(error.message)
+            }
         }
     </script>
 </body>
