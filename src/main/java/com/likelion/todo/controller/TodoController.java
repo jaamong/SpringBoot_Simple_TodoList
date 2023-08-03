@@ -1,13 +1,12 @@
 package com.likelion.todo.controller;
 
-import com.likelion.todo.service.TodoService;
-import com.likelion.todo.dto.TodoSaveDto;
 import com.likelion.todo.dto.TodoDto;
+import com.likelion.todo.dto.TodoSaveDto;
+import com.likelion.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.HeadersBuilder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -45,29 +44,31 @@ public class TodoController {
         return ResponseEntity.ok(todo);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{todoId}/done")
-    public HeadersBuilder<?> updateDone(@PathVariable("userId") Long userId,
-                                        @PathVariable("todoId") Long todoId,
-                                        @RequestHeader("Authorization") String token) {
+    public void updateDone(@PathVariable("userId") Long userId,
+                           @PathVariable("todoId") Long todoId,
+                           @RequestHeader("Authorization") String token) {
+
         todoService.updateTodoDone(userId, todoId);
-        return ResponseEntity.noContent();
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{todoId}/content")
-    public HeadersBuilder<?> updateContent(@PathVariable("userId") Long userId,
-                                           @PathVariable("todoId") Long todoId,
-                                           @RequestBody TodoSaveDto dto,
-                                           @RequestHeader("Authorization") String token) {
+    public void updateContent(@PathVariable("userId") Long userId,
+                              @PathVariable("todoId") Long todoId,
+                              @RequestBody TodoSaveDto dto,
+                              @RequestHeader("Authorization") String token) {
 
         todoService.updateTodoContent(userId, todoId, dto.getContent());
-        return ResponseEntity.noContent();
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{todoId}")
-    public HeadersBuilder<?> delete(@PathVariable("userId") Long userId,
-                                    @PathVariable("todoId") Long todoId,
-                                    @RequestHeader("Authorization") String token) {
+    public void delete(@PathVariable("userId") Long userId,
+                       @PathVariable("todoId") Long todoId,
+                       @RequestHeader("Authorization") String token) {
+
         todoService.deleteTodo(userId, todoId);
-        return ResponseEntity.noContent();
     }
 }
