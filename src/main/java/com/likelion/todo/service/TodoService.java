@@ -24,13 +24,13 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
 
-    public TodoDto createTodo(TodoSaveDto form, String username) {
+    public TodoDto createTodo(TodoSaveDto dto, Long userId) {
 
-        CustomUserDetails user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username));
+        CustomUserDetails user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("Not Found User"));
 
         Todo todo = Todo.builder()
-                .content(form.getContent())
+                .content(dto.getContent())
                 .done(false)
                 .user(user)
                 .build();

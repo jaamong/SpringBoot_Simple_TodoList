@@ -34,11 +34,10 @@ public class TodoController {
     @PostMapping
     public ResponseEntity<TodoDto> create(@RequestHeader("Authorization") String token,
                                           @RequestBody TodoSaveDto dto,
-                                          @PathVariable("userId") Long userId, //안쓰는데 url에 있어서 받아온 것. todo : 나중에 Principal 대신 사용
-                                          Principal principal) {
+                                          @PathVariable("userId") Long userId) {
 
         log.info("TodoSaveDto : {}, {}", dto.getContent(), dto.getDone());
-        TodoDto todo = todoService.createTodo(dto, principal.getName());
+        TodoDto todo = todoService.createTodo(dto, userId);
         log.info("todoDto : {}", todo.toString());
 
         return ResponseEntity.ok(todo);
@@ -57,10 +56,10 @@ public class TodoController {
     @PutMapping("/{todoId}/content")
     public void updateContent(@PathVariable("userId") Long userId,
                               @PathVariable("todoId") Long todoId,
-                              @RequestBody TodoSaveDto dto,
+                              @RequestBody String content,
                               @RequestHeader("Authorization") String token) {
 
-        todoService.updateTodoContent(userId, todoId, dto.getContent());
+        todoService.updateTodoContent(userId, todoId, content);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

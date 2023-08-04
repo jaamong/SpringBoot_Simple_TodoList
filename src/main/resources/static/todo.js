@@ -2,7 +2,6 @@ const todoListUl = document.getElementById('todo-list-ul');
 
 const token = localStorage.getItem('token');
 const userId = localStorage.getItem('userId');
-let todoId = 0;
 
 readAll(); //페이지 첫 로드 시에만 호출, 그 이후로는 싱글 호출
 
@@ -10,10 +9,11 @@ readAll(); //페이지 첫 로드 시에만 호출, 그 이후로는 싱글 호�
 document.getElementById('create').addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const newTodo = document.getElementById('todo').value;
-    if (newTodo === '') alert("You must write something in the box!");
+    const todoEl = document.getElementById('todo');
+    const todoElValue = todoEl.value;
 
-    console.log(newTodo)
+    if (todoElValue === '')
+        alert("You must write something in the box!");
 
     try {
         const createResponse = await fetch(`/users/${userId}/todos`, {
@@ -23,73 +23,84 @@ document.getElementById('create').addEventListener('submit', async (event) => {
                 'Authorization': 'Bearer ' + token
             },
             body: JSON.stringify({
-                content: newTodo,
+                content: todoElValue,
                 done: false
             })
         })
+
         const todoDto = await createResponse.json();
+        console.log(todoDto.id);
 
         if (!createResponse.ok) {
-            const ReadAllResponseBody = await createResponse.json();
-            alert(ReadAllResponseBody.message)
+            alert(todoDto.message)
             return
         }
 
-        todoId = todoDto.id;
-        newTodo.value = "";
+        // --- tasks ---
+        const listEl = document.querySelector("#tasks");
 
-        //생성하고 ul 태그에 넣기
-        let li = document.createElement('li');
-        li.innerHTML = todoDto.content;
+        const taskEl = document.createElement("div");
+        taskEl.idx = todoDto.id;
 
-        let span = document.createElement('span');
-        span.innerHTML = "x";
-        li.appendChild(span);
+        const taskContentEl = document.createElement("div");
 
-        let button = document.createElement('button');
-        button.innerHTML = "EDIT";
-        button.setAttribute("class", "edit");
-        li.appendChild(button);
+        taskEl.appendChild(taskContentEl);
 
-        todoListUl.appendChild(li);
+        const taskInputEl = document.createElement("input");
+        taskInputEl.type = "text";
+        taskInputEl.value = todoDto.content;
+        taskInputEl.setAttribute("readonly", "readonly");
+
+        taskContentEl.appendChild(taskInputEl);
+
+        const taskActionsEl = document.createElement("div");
+
+        const taskCheckEl = document.createElement("input");
+        taskCheckEl.type = "checkbox";
+
+        const taskEditEl = document.createElement("button");
+        taskEditEl.innerHTML = "EDIT";
+
+        const taskDeleteEl = document.createElement("button");
+        taskDeleteEl.innerHTML = "DELETE";
+
+        taskActionsEl.appendChild(taskCheckEl);
+        taskActionsEl.appendChild(taskEditEl);
+        taskActionsEl.appendChild(taskDeleteEl);
+
+        taskEl.appendChild(taskActionsEl);
+
+        listEl.appendChild(taskEl);
+
+        todoEl.value = "";
 
         //할 일 수정
-        button.addEventListener('click', () => {
-            if (button.innerHTML == "EDIT") {
-                newTodo.removeAttribute("readonly");
-                newTodo.focus();
-                button.innerText = "SAVE";
-                updateContent(newTodo);
+        taskEditEl.addEventListener('click', () => {
+            if (taskEditEl.innerHTML == "EDIT") {
+                taskInputEl.removeAttribute("readonly");
+                taskInputEl.focus();
+                taskEditEl.innerText = "SAVE";
+
+                updateContent(taskInputEl.value, taskEl.idx);
             } else {
-                newTodo.setAttribute("readonly", "readonly");
-                button.innerText = "EDIT";
+                taskInputEl.setAttribute("readonly", "readonly");
+                taskEditEl.innerText = "EDIT";
             }
         })
 
         //할 일 삭제
-        span.addEventListener('click', () => {
-            if (event.target.tagName === "SPAN") {
-                event.target.parentElement.remove();
-
-                console.log(userId);
-                console.log(todoId);
-
-                deleteTodo();
+        taskDeleteEl.addEventListener('click', () => {
+            if (taskDeleteEl.innerHTML === "DELETE") {
+                listEl.removeChild(taskEl);
+                deleteTodo(taskEl.idx);
             }
         })
 
         // 할 일 완료/취소
-        li.addEventListener('click', () => {
-            if (event.target.tagName === "LI") {
-                event.target.classList.toggle("checked");
-
-                console.log(userId);
-                console.log(todoId);
-
-                updateDone();
-            }
+        taskCheckEl.addEventListener('click', () => {
+            taskCheckEl.classList.toggle("checked");
+            updateDone(taskEl.idx);
         })
-
     } catch (error) {
         console.log(error.message)
     }
@@ -114,7 +125,7 @@ async function readAll() {
 }
 
 //todo done update 함수 (fetch)
-async function updateDone() {
+async function updateDone(todoId) {
     try {
         await fetch(`/users/${userId}/todos/${todoId}/done`, {
             method: 'PUT',
@@ -129,9 +140,9 @@ async function updateDone() {
 }
 
 //todo content update 함수 (fetch)
-async function updateContent(content) {
+async function updateContent(content, todoId) {
     try {
-        await fetch(`/users/${userId}/todos/${todoId}/done`, {
+        await fetch(`/users/${userId}/todos/${todoId}/content`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -146,7 +157,7 @@ async function updateContent(content) {
 }
 
 //todo 제거 함수 (fetch)
-async function deleteTodo() {
+async function deleteTodo(todoId) {
     try {
         await fetch(`/users/${userId}/todos/${todoId}`, {
             method: 'DELETE',
