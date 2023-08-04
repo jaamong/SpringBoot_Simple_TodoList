@@ -52,11 +52,8 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustom() throws Exception {
         return (webSecurity) -> webSecurity
                 .ignoring()
-                .requestMatchers(
-                        "/static/js/**",
-                        "/static/image/**",
-                        "/static/css/**"
-                ).anyRequest();
+                .requestMatchers("/static/**")
+                .anyRequest();
     }
 
     @Bean
