@@ -26,11 +26,12 @@ spring:
         enabled: true
 
   thymeleaf:
-    suffix: .html
     cache: false
+    suffix: .html # 파일 확장자
+
 jwt:
   secretKey: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesasdfqve
 
 logging.level:
-    org.hibernate.SQL: debug
-    org.hibernate.type.descriptor.sql: trace
+  org.hibernate.SQL: debug
+  org.hibernate.type.descriptor.sql: trace
