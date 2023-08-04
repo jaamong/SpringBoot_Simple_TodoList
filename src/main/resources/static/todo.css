@@ -1,0 +1,17 @@
+div div {
+    list-style: none;
+    user-select: none;
+    cursor: pointer;
+    position: relative;
+    padding: 10px 0 10px 40px;
+}
+
+div div::before {
+    content: '';
+    position: absolute;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    top: 12px;
+    left: 8px;
+}
