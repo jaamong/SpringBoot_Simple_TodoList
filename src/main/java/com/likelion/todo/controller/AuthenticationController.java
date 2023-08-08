@@ -8,6 +8,7 @@ import com.likelion.todo.jwt.JwtTokenUtils;
 import com.likelion.todo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,10 +29,10 @@ public class AuthenticationController {
     /**
      * 회원 가입
      */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/register")
-    public ResponseEntity<UserRegisterRequestDto> registerUser(@Validated @RequestBody UserRegisterRequestDto dto) {
-        CustomUserDetails customUserDetails = userService.registerUser(dto.getUsername(), dto.getPassword(), dto.getEmail());
-        return ResponseEntity.ok(UserRegisterRequestDto.from(customUserDetails));
+    public void registerUser(@Validated @RequestBody UserRegisterRequestDto dto) {
+        userService.registerUser(dto.getUsername(), dto.getPassword(), dto.getEmail());
     }
 
     /**
