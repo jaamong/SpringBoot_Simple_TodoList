@@ -27,7 +27,7 @@ public class TodoService {
     public TodoDto createTodo(TodoSaveDto dto, Long userId) {
 
         CustomUserDetails user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("Not Found User"));
+                .orElseThrow(() -> new UsernameNotFoundException("[createTodo] Not Found User"));
 
         Todo todo = Todo.builder()
                 .content(dto.getContent())
@@ -64,6 +64,7 @@ public class TodoService {
     public void deleteTodo(Long userId, Long todoId) {
         Todo todo = getTodoById(userId, todoId);
         todoRepository.delete(todo);
+        log.info("[deleteTodo] delete user[{}]'s the todo : {}", userId, todoId);
     }
 
     private Todo getTodoById(Long userId, Long todoId) {
@@ -71,6 +72,6 @@ public class TodoService {
                 .stream()
                 .filter(t -> t.getId().equals(todoId))
                 .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 todo 입니다."));
     }
 }
