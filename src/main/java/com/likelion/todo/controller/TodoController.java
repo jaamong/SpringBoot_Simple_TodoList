@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @Slf4j
@@ -21,10 +20,8 @@ public class TodoController {
     private final TodoService todoService;
 
     @GetMapping
-    public ResponseEntity<List<TodoDto>> readAll(@PathVariable("userId") Long userId,
-                                                 @RequestHeader("Authorization") String token) {
+    public ResponseEntity<List<TodoDto>> readAll(@PathVariable("userId") Long userId) {
 
-        log.info("[readAll] jwt token : {}", token);
         List<TodoDto> todoList = todoService.findAll(userId);
         log.info(todoList.toString());
 
@@ -32,8 +29,7 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoDto> create(@RequestHeader("Authorization") String token,
-                                          @RequestBody TodoSaveDto dto,
+    public ResponseEntity<TodoDto> create(@RequestBody TodoSaveDto dto,
                                           @PathVariable("userId") Long userId) {
 
         log.info("TodoSaveDto : {}, {}", dto.getContent(), dto.getDone());
@@ -46,8 +42,7 @@ public class TodoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{todoId}/done")
     public void updateDone(@PathVariable("userId") Long userId,
-                           @PathVariable("todoId") Long todoId,
-                           @RequestHeader("Authorization") String token) {
+                           @PathVariable("todoId") Long todoId) {
 
         todoService.updateTodoDone(userId, todoId);
     }
@@ -56,8 +51,7 @@ public class TodoController {
     @PutMapping("/{todoId}/content")
     public void updateContent(@PathVariable("userId") Long userId,
                               @PathVariable("todoId") Long todoId,
-                              @RequestBody String content,
-                              @RequestHeader("Authorization") String token) {
+                              @RequestBody String content) {
 
         todoService.updateTodoContent(userId, todoId, content);
     }
@@ -65,8 +59,7 @@ public class TodoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{todoId}")
     public void delete(@PathVariable("userId") Long userId,
-                       @PathVariable("todoId") Long todoId,
-                       @RequestHeader("Authorization") String token) {
+                       @PathVariable("todoId") Long todoId) {
 
         todoService.deleteTodo(userId, todoId);
     }
