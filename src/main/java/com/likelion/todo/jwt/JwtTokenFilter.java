@@ -35,7 +35,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        log.info("[JwtTokenFilter] doFilterInternal() start");
+        log.info("[doFilterInternal] start");
 
         //JWT가 포함되어 있으면 포함되어 있는 헤더 요청
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -46,6 +46,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String token = authHeader.split(" ")[1]; //Bearer 이후 토큰값 가져오기
 
             if (jwtTokenUtils.validate(token)) {
+
+                log.info("[doFilterInternal] validate token : {}", token);
 
                 String username = jwtTokenUtils.parseClaims(token).getSubject(); //JWT에서 subejct(사용자 이름/principal) 가져오기
 
@@ -63,10 +65,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 context.setAuthentication(authenticationToken); //SecurityContext에 사용자 정보 생성
                 SecurityContextHolder.setContext(context); //SecurityContextHolder에 SecurityContext 설정
 
-                log.info("set security context with JWT");
+                log.info("[doFilterInternal] set security context with JWT");
             }
         } else
-            log.warn("[JwtTokenFilter] JWT validation failed in doFilterInternal()");
+            log.warn("[doFilterInternal] JWT validation failed");
         filterChain.doFilter(request, response);
     }
 }
