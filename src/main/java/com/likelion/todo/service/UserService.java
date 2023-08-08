@@ -43,7 +43,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public CustomUserDetails registerUser(String username, String password, String email) {
+    public void registerUser(String username, String password, String email) {
         String encodedPassword = encoder.encode(password);
 
         Set<Role> authorities = new HashSet<>();
@@ -53,10 +53,11 @@ public class UserService implements UserDetailsService {
         if (existsByUsername(username))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다.");
 
-        return userRepository.save(CustomUserDetails.builder()
+        userRepository.save(CustomUserDetails.builder()
                 .username(username)
                 .password(encodedPassword)
                 .email(email)
+                .authorities(authorities)
                 .build());
     }
 
