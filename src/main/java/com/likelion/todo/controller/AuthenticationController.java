@@ -43,7 +43,7 @@ public class AuthenticationController {
         CustomUserDetails user = userService.validateUser(dto);
         String token = jwtTokenUtils.generateToken(user);
 
-        log.info("login user: {}, token: {}", user.toString(), token);
+        log.info("[login] user: {}, generated token: {}", user.toString(), token);
 
         return ResponseEntity.ok(new LoginResponseDto(user, token));
     }
