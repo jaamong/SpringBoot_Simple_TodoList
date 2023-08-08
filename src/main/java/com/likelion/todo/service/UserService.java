@@ -34,9 +34,9 @@ public class UserService implements UserDetailsService {
     private final PasswordEncoder encoder;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
 
-        log.info("In the user details service");
+        log.info("[loadUserByUsername]");
 
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " is not valid"));
@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService {
 
         //비밀번호 확인
         if (!encoder.matches(dto.getPassword(), userDetails.getPassword()))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
 
         return CustomUserDetails.builder()
                 .id(loadUserIdByUsername(dto.getUsername()))
