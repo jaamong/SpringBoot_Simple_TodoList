@@ -54,11 +54,6 @@ public class SecurityConfig {
                 .anyRequest();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
     //AuthenticationManager : 어떻게 사용자를 인증할 건지 정의 -> 구현한 UserDetailsService 사용
     //ProviderManager : AuthenticationManager 구현체
     // - ProviderManager 는 AuthenticationProvider 목록을 위임 받는다
