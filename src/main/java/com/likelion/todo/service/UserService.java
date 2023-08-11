@@ -36,7 +36,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
 
-        log.info("[loadUserByUsername]");
+        log.info("[loadUserByUsername] username : {}", username);
 
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " is not valid"));
