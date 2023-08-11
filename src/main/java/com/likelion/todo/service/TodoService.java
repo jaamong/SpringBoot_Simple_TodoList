@@ -51,14 +51,14 @@ public class TodoService {
     public void updateTodoDone(Long userId, Long todoId) {
         Todo todo = getTodoById(userId, todoId);
         todo.updateDone(!todo.getDone());
-        log.info("[updateTodoDone] done status changed to {}", getTodoById(userId, todoId).getDone());
+        log.info("[updateTodoDone] done user[{}]'s status changed", userId);
     }
 
     @Transactional
     public void updateTodoContent(Long userId, Long todoId, String content) {
         Todo todo = getTodoById(userId, todoId);
         todo.updateContent(content);
-        log.info("[updateTodoContent] done content changed to {}", getTodoById(userId, todoId).getContent());
+        log.info("[updateTodoContent] done user[{}]'s content changed", userId);
     }
 
     public void deleteTodo(Long userId, Long todoId) {
