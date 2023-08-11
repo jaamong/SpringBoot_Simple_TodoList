@@ -28,7 +28,7 @@ document.getElementById('login').addEventListener('submit', async (event) => {
         localStorage.setItem('token', data.token) //로컬 스토리지에 token 설정
         localStorage.setItem('userId', data.user.id)
 
-        location.href = 'todo.html';
+        window.location = '/todo-home';
     } catch (e) {
         console.log(e);
     }

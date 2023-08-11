@@ -7,7 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
 
     @GetMapping("/todo-list")
-    public String home() {
+    public String loginHome() {
         return "login";
+    }
+
+    @GetMapping("/todo-home")
+    public String todoHome() {
+        return "todo";
     }
 }
