@@ -1,8 +1,8 @@
 package com.likelion.todo.jwt;
 
-import com.likelion.todo.entity.CustomUserDetails;
 import com.likelion.todo.entity.Role;
 import com.likelion.todo.repository.RoleRepository;
+import com.likelion.todo.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,10 +26,12 @@ import java.util.Set;
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtils jwtTokenUtils;
+    private final UserService userService;
     private final RoleRepository roleRepository;
 
-    public JwtTokenFilter(JwtTokenUtils jwtTokenUtils, RoleRepository roleRepository) {
+    public JwtTokenFilter(JwtTokenUtils jwtTokenUtils, UserService userService, RoleRepository roleRepository) {
         this.jwtTokenUtils = jwtTokenUtils;
+        this.userService = userService;
         this.roleRepository = roleRepository;
     }
 
@@ -50,13 +53,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 log.info("[doFilterInternal] validate token : {}", token);
 
                 String username = jwtTokenUtils.parseClaims(token).getSubject(); //JWT에서 subejct(사용자 이름/principal) 가져오기
+                UserDetails userDetails = userService.loadUserByUsername(username);
 
                 Set<Role> authorities = new HashSet<>();
                 Role userRole = roleRepository.findByAuthority("USER").get();
                 authorities.add(userRole);
 
                 AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken( //사용자 인증 정보 생성
-                        CustomUserDetails.builder().username(username).build(),
+                        userDetails,
                         token, //비밀번호 (대신 token 으로 전달)
                         authorities //권한
                 );
@@ -69,6 +73,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
         } else
             log.warn("[doFilterInternal] JWT validation failed");
+
         filterChain.doFilter(request, response);
     }
 }
