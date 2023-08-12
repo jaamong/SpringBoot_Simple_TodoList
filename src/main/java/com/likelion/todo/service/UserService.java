@@ -81,7 +81,8 @@ public class UserService implements UserDetailsService {
     }
 
     private boolean existsByUsername(String username) {
-        return userRepository.findByUsername(username).isPresent();
+        log.info("check username [{}] if exists ", username);
+        return userRepository.existsByUsername(username);
     }
 
     private Long loadUserIdByUsername(String username) {
