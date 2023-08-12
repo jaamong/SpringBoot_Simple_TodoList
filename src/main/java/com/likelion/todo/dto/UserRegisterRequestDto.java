@@ -10,15 +10,9 @@ import lombok.Setter;
 @Getter @Setter
 public class UserRegisterRequestDto {
 
-    @NotBlank(message = "enter your account's username")
     private String username;
-
-    @Min(value = 8, message = "password must consisted of 8 characters at least")
-    @NotBlank(message = "enter your account's password")
     private String password;
-
     @Email
-    @NotBlank(message = "enter your account's email")
     private String email;
 
     public static UserRegisterRequestDto from(CustomUserDetails user) {

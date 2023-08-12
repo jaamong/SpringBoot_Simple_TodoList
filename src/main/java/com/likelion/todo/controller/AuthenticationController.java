@@ -31,7 +31,7 @@ public class AuthenticationController {
      */
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/register")
-    public void registerUser(@Validated @RequestBody UserRegisterRequestDto dto) {
+    public void registerUser(@RequestBody UserRegisterRequestDto dto) {
         userService.registerUser(dto.getUsername(), dto.getPassword(), dto.getEmail());
     }
 
@@ -39,7 +39,7 @@ public class AuthenticationController {
      * jwt token 발급
      */
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Validated @RequestBody UserLoginRequestDto dto) {
+    public ResponseEntity<LoginResponseDto> login(@RequestBody UserLoginRequestDto dto) {
         CustomUserDetails user = userService.validateUser(dto);
         String token = jwtTokenUtils.generateToken(user);
 

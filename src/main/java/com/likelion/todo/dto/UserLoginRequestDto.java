@@ -9,10 +9,7 @@ import lombok.Setter;
 @Getter @Setter
 public class UserLoginRequestDto {
 
-    @NotBlank(message = "enter your account's username")
     private String username;
-
-    @NotBlank(message = "enter your account's password")
     private String password;
 
     public static UserRegisterRequestDto from(CustomUserDetails user) {
