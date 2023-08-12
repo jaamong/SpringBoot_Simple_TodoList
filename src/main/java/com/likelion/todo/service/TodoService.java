@@ -16,6 +16,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static com.likelion.todo.dto.error.CustomErrorCode.NOT_EXISTS_TODO;
+import static com.likelion.todo.dto.error.CustomErrorCode.NOT_FOUND_USER;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,7 +30,7 @@ public class TodoService {
     public TodoDto createTodo(TodoSaveDto dto, Long userId) {
 
         CustomUserDetails user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("[createTodo] Not Found User"));
+                .orElseThrow(() -> new UsernameNotFoundException(NOT_FOUND_USER.name()));
 
         Todo todo = Todo.builder()
                 .content(dto.getContent())
@@ -72,6 +75,6 @@ public class TodoService {
                 .stream()
                 .filter(t -> t.getId().equals(todoId))
                 .findFirst()
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 todo 입니다."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_EXISTS_TODO.name())); //존재하지 않는 투두 입니다.
     }
 }

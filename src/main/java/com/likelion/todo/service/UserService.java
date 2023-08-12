@@ -19,6 +19,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.likelion.todo.dto.error.CustomErrorCode.ALREADY_EXISTS_ID;
+import static com.likelion.todo.dto.error.CustomErrorCode.NOT_FOUND_USER;
+
 /**
  * determines whether the user's username and password match up
  * implement UserDetailService
@@ -39,7 +42,7 @@ public class UserService implements UserDetailsService {
         log.info("[loadUserByUsername] username : {}", username);
 
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + " is not valid"));
+                .orElseThrow(() -> new UsernameNotFoundException(NOT_FOUND_USER.name()));
     }
 
     @Transactional
@@ -51,7 +54,7 @@ public class UserService implements UserDetailsService {
         authorities.add(userRole);
 
         if (existsByUsername(username))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 닉네임입니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ALREADY_EXISTS_ID.name());
 
         userRepository.save(CustomUserDetails.builder()
                 .username(username)
@@ -83,7 +86,7 @@ public class UserService implements UserDetailsService {
 
     private Long loadUserIdByUsername(String username) {
         CustomUserDetails user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(username + " is not valid"));
+                .orElseThrow(() -> new UsernameNotFoundException(NOT_FOUND_USER.name()));
         return user.getId();
     }
 }
