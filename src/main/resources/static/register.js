@@ -21,25 +21,28 @@ document.getElementById('register').addEventListener('submit', async (event) => 
     } else if (email.value === '') {
         email.focus();
         alert("이메일을 입력해주세요.");
-    }
-
-
-    await fetch('/auth/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            username: username.value,
-            password: password.value,
-            email: email.value
+    } else { // 다 입력했으면
+        const promise = await fetch('/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username.value,
+                password: password.value,
+                email: email.value
+            })
         })
-    }).catch((error) => {
-        console.log("[register] fetch fail");
-        console.log(error);
-    })
 
+        if (!promise.ok) {
+            console.log("[register] fetch fail");
 
-    //로그인 페이지로 리다이렉트
-    location.href = 'login.html';
+            response = await promise.json();
+
+            username.focus();
+            alert("이미 사용중인 아이디입니다.");
+        } else {
+            location.href = 'login.html';
+        }
+    }
 })
