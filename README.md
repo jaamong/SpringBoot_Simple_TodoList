@@ -85,6 +85,8 @@ $ git clone https://github.com/jaamong/SpringBoot_Simple_TodoList.git
 
 <p>
  <img src="https://img.shields.io/badge/IntelliJ IDEA-000000?style=flat-square&logo=IntelliJ IDEA&logoColor=white">
+ <img src="https://img.shields.io/badge/Visual Studio Code-007ACC?style=flat-square&logo=Visual Studio Code&logoColor=white">
+ <img src="https://img.shields.io/badge/Postman-FF6C37?style=flat-square&logo=Postman&logoColor=white">
  <img src="https://img.shields.io/badge/GIT-F05032?style=flat-square&logo=GIT&logoColor=white">
  <img src="https://img.shields.io/badge/GITHUB-181717?style=flat-square&logo=GITHUB&logoColor=white">
 </p>
@@ -93,13 +95,13 @@ $ git clone https://github.com/jaamong/SpringBoot_Simple_TodoList.git
 <h3>Development</h3>
 
 <p>
- <img src="https://img.shields.io/badge/Spring Boot-6DB33F?style=flat-square&logo=Spring Boot&logoColor=white">
- <img src="https://img.shields.io/badge/Spring Security-6DB33F?style=flat-square&logo=Spring Security&logoColor=white">
+ <img src="https://img.shields.io/badge/Spring Boot 3.1.0-6DB33F?style=flat-square&logo=Spring Boot&logoColor=white">
+ <img src="https://img.shields.io/badge/Spring Security 6.1.0-6DB33F?style=flat-square&logo=Spring Security&logoColor=white">
  <img src="https://img.shields.io/badge/Json Web Tokens-000000?style=flat-square&logo=Json Web Tokens&logoColor=white">
  <img src="https://img.shields.io/badge/Hibernate-59666C?style=flat-square&logo=hibernate&logoColor=white">
  <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=flat-square&logo=Thymeleaf&logoColor=white">
  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white">
- <img src="https://img.shields.io/badge/Gradle-02303A?style=flat-square&logo=Gradle&logoColor=white">
+ <img src="https://img.shields.io/badge/Gradle 7.6.1-02303A?style=flat-square&logo=Gradle&logoColor=white">
 </p>
 
 <br><br>
