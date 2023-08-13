@@ -2,7 +2,19 @@
 
 <br>
 
-<h2> 프로젝트 소개</h2>
+<h2>목차</h2>
+
+1. [프로젝트 소개](#프로젝트-소개)
+2. [시작 가이드](#시작-가이드)
+3. [실행 화면(업데이트 예정)](#실행-화면업데이트-예정)
+4. [기술 스택](#기술-스택)
+5. [프로젝트 구조](#프로젝트-구조)
+6. [회고](#회고)
+7. [Need To Fix/Update](#need-to-fixupdate)
+
+<br><br>
+
+<h2>프로젝트 소개</h2>
 
 **이 프로젝트는 간단한 투두리스트 프로그램을 구현한 것입니다.**
 
@@ -24,13 +36,13 @@
 
 <br>
 
-<h2> 시작 가이드 </h2>
+<h2>시작 가이드</h2>
 
 <h3>요구사항</h3>
 이 프로그램을 로컬 환경에서 실행하려면 아래의 도구들이 필요합니다.
 
-* [Java 17] (https://www.oracle.com/java/technologies/downloads/#jdk17-linux)
-* [H2 Database 2.1.214] (http://www.h2database.com/html/download.html)
+* [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk17-linux)
+* [H2 Database 2.1.214](http://www.h2database.com/html/download.html)
 
 <br>
 
@@ -61,7 +73,7 @@ $ git clone https://github.com/jaamong/SpringBoot_Simple_TodoList.git
 
 <br><br>
 
-<h2>실행 화면 (업데이트 예정)</h2>
+<h2>실행 화면(업데이트 예정)</h2>
 
 <img src="resultScreen.png" width="50%" height="40%"/>
 
