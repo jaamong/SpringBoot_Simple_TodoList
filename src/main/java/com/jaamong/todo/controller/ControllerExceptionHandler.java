@@ -25,7 +25,7 @@ public class ControllerExceptionHandler {
     //ResponseStatusException
     @ExceptionHandler
     public ResponseEntity<ErrorMessageDto> handlerResponseStatusException(ResponseStatusException e) {
-        String split = e.getMessage().split(" ")[2];
+        String split = e.getMessage().split("\\s")[2];
         ErrorMessageDto message = new ErrorMessageDto(split);
         log.info("[ResponseStatusException] {}", split);
         return ResponseEntity.status(e.getStatusCode()).body(message);
