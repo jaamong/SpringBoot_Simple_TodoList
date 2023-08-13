@@ -1,7 +1,6 @@
 package com.jaamong.todo.service;
 
 import com.jaamong.todo.dto.UserLoginRequestDto;
-import com.jaamong.todo.dto.error.CustomErrorCode;
 import com.jaamong.todo.entity.CustomUserDetails;
 import com.jaamong.todo.entity.Role;
 import com.jaamong.todo.repository.RoleRepository;
@@ -19,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.jaamong.todo.dto.error.CustomErrorCode.*;
 
 /**
  * determines whether the user's username and password match up
@@ -40,7 +41,7 @@ public class UserService implements UserDetailsService {
         log.info("[loadUserByUsername] username : {}", username);
 
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(CustomErrorCode.NOT_FOUND_USER.name()));
+                .orElseThrow(() -> new UsernameNotFoundException(NOT_FOUND_USER.name()));
     }
 
     @Transactional
@@ -52,7 +53,7 @@ public class UserService implements UserDetailsService {
         authorities.add(userRole);
 
         if (existsByUsername(username))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, CustomErrorCode.ALREADY_EXISTS_ID.name());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, ALREADY_EXISTS_ID.name());
 
         userRepository.save(CustomUserDetails.builder()
                 .username(username)
@@ -69,7 +70,7 @@ public class UserService implements UserDetailsService {
 
         //비밀번호 확인
         if (!encoder.matches(dto.getPassword(), userDetails.getPassword()))
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, INVALID_PASSWORD.name());
 
         return CustomUserDetails.builder()
                 .id(loadUserIdByUsername(dto.getUsername()))
@@ -85,7 +86,7 @@ public class UserService implements UserDetailsService {
 
     private Long loadUserIdByUsername(String username) {
         CustomUserDetails user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(CustomErrorCode.NOT_FOUND_USER.name()));
+                .orElseThrow(() -> new UsernameNotFoundException(NOT_FOUND_USER.name()));
         return user.getId();
     }
 }
