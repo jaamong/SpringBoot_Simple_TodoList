@@ -5,7 +5,7 @@ document.getElementById('login').addEventListener('submit', async (event) => {
     const password = document.getElementById('password').value;
 
     try {
-        const LoginResponse = await fetch('/auth/login', {
+        const promise = await fetch('/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -16,19 +16,23 @@ document.getElementById('login').addEventListener('submit', async (event) => {
             })
         })
 
-        const data = await LoginResponse.json();
+        response = await promise.json();
+        console.log(response);
 
-        if(!LoginResponse.ok) {
+        if (!promise.ok) {
             console.log("[login] fetch fail");
-            throw new Error(data.message);
+
+            const message = response.message;
+
+            if (message === "NOT_FOUND_USER" || message === "\"INVALID_PASSWORD\"")
+                alert("아이디 또는 비밀번호를 잘못 입력했습니다.");
+
+        } else {
+            localStorage.setItem('token', response.token) //로컬 스토리지에 token 설정
+            localStorage.setItem('userId', response.user.id)
+
+            location.href = 'todo.html';
         }
-
-        console.log(data);
-
-        localStorage.setItem('token', data.token) //로컬 스토리지에 token 설정
-        localStorage.setItem('userId', data.user.id)
-
-        window.location = '/todo-home';
     } catch (e) {
         console.log(e);
     }
