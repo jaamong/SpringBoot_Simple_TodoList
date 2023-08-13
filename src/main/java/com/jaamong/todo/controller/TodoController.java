@@ -1,7 +1,7 @@
 package com.jaamong.todo.controller;
 
-import com.jaamong.todo.dto.TodoDto;
-import com.jaamong.todo.dto.TodoSaveDto;
+import com.jaamong.todo.dto.TodoResponseDto;
+import com.jaamong.todo.dto.TodoSaveRequestDto;
 import com.jaamong.todo.service.TodoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,20 +20,20 @@ public class TodoController {
     private final TodoService todoService;
 
     @GetMapping
-    public ResponseEntity<List<TodoDto>> readAll(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<TodoResponseDto>> readAll(@PathVariable("userId") Long userId) {
 
-        List<TodoDto> todoList = todoService.findAll(userId);
+        List<TodoResponseDto> todoList = todoService.findAll(userId);
         log.info(todoList.toString());
 
         return ResponseEntity.ok(todoList);
     }
 
     @PostMapping
-    public ResponseEntity<TodoDto> create(@RequestBody TodoSaveDto dto,
-                                          @PathVariable("userId") Long userId) {
+    public ResponseEntity<TodoResponseDto> create(@RequestBody TodoSaveRequestDto dto,
+                                                  @PathVariable("userId") Long userId) {
 
         log.info("TodoSaveDto : {}, {}", dto.getContent(), dto.getDone());
-        TodoDto todo = todoService.createTodo(dto, userId);
+        TodoResponseDto todo = todoService.createTodo(dto, userId);
         log.info("todoDto : {}", todo.toString());
 
         return ResponseEntity.ok(todo);

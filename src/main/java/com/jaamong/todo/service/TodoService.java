@@ -1,7 +1,7 @@
 package com.jaamong.todo.service;
 
-import com.jaamong.todo.dto.TodoDto;
-import com.jaamong.todo.dto.TodoSaveDto;
+import com.jaamong.todo.dto.TodoResponseDto;
+import com.jaamong.todo.dto.TodoSaveRequestDto;
 import com.jaamong.todo.dto.error.CustomErrorCode;
 import com.jaamong.todo.entity.CustomUserDetails;
 import com.jaamong.todo.repository.TodoRepository;
@@ -25,7 +25,7 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final UserRepository userRepository;
 
-    public TodoDto createTodo(TodoSaveDto dto, Long userId) {
+    public TodoResponseDto createTodo(TodoSaveRequestDto dto, Long userId) {
 
         CustomUserDetails user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(CustomErrorCode.NOT_FOUND_USER.name()));
@@ -38,13 +38,13 @@ public class TodoService {
 
         todoRepository.save(todo);
 
-        return TodoDto.from(todo);
+        return TodoResponseDto.from(todo);
     }
 
-    public List<TodoDto> findAll(Long id) {
+    public List<TodoResponseDto> findAll(Long id) {
         return todoRepository.findAllByUserId(id)
                 .stream()
-                .map(TodoDto::from)
+                .map(TodoResponseDto::from)
                 .toList();
     }
 

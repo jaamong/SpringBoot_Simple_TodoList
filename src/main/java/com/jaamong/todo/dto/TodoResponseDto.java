@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter @Setter
 @NoArgsConstructor
-public class TodoDto {
+public class TodoResponseDto {
 
     private Long id;
 
@@ -15,8 +15,8 @@ public class TodoDto {
 
     private Boolean done;
 
-    public static TodoDto from(Todo todo) {
-        TodoDto dto = new TodoDto();
+    public static TodoResponseDto from(Todo todo) {
+        TodoResponseDto dto = new TodoResponseDto();
         dto.setId(todo.getId());
         dto.setContent(todo.getContent());
         dto.setDone(todo.getDone());
