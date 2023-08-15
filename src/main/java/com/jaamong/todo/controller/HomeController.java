@@ -15,4 +15,9 @@ public class HomeController {
     public String todoHome() {
         return "todo";
     }
+
+    @GetMapping("/register")
+    public String registerForm() {
+        return "register";
+    }
 }
