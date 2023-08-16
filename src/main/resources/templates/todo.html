@@ -5,24 +5,146 @@
     <meta charset="UTF-8">
     <title>TodoList</title>
 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!--
     <link rel="stylesheet" href="todo.css">
+    -->
+
+    <style>
+        * {
+            margin: 0;
+            box-sizing: border-box;
+            min-width: 30px;
+            min-height: 30px;
+        }
+
+        .todoForm {
+            position: absolute;
+            top: 22%;
+            left: 39%;
+        }
+
+        .row {
+            position: absolute;
+        }
+
+        .createSubmit {
+            position: absolute;
+            top: 55%;
+            left: 101%;
+        }
+
+        #tasks {
+            position: absolute;
+            top: 45%;
+            left: 40%;
+            width: 300px;
+            height: 60px;
+        }
+
+        .cbDiv {
+            position: absolute;
+            top: 12%;
+            left: 90%;
+        }
+/*
+        input[type="checkbox"]+label::before {
+            display: inline-block;
+            border: 2px solid;
+            border-color: #ececec;
+            border-radius: 4px;
+            width: 0%;
+            height: 0%;
+        }
+
+        input[type="checkbox"]:checked+label::before {
+            background-image: url(https://s2.svgbox.net/materialui.svg?ic=check_box);
+            background-repeat: no-repeat;
+            background-position: center left;
+            background-size: cover;
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+*/
+        .btn1 {
+            position: absolute;
+            display: inline-block;
+            background-color: #343A40;
+            color: #fff;
+            left: 105%;
+            margin-right: -4px;
+            font-size: 12px;
+            border: none;
+            border-top-left-radius: 8px;
+            border-bottom-left-radius: 8px;
+            border-radius: 8px;
+            padding: 9px 13px;
+            min-height: 30px;
+            min-width: 60px;
+        }
+
+        .btn2 {
+            position: absolute;
+            display: inline-block;
+            background-color: #343A40;
+            color: #fff;
+            left: 130%;
+            margin-left: -5px;
+            font-size: 12px;
+            border: none;
+            border-top-right-radius: 8px;
+            border-bottom-right-radius: 8px;
+            padding: 9px 10px;
+            min-height: 30px;
+            min-width: 60px;
+        }
+    </style>
 </head>
 
 <body>
-<h1>TODO LIST</h1>
+<div class="container">
+    <h1 class="m-5 text-left font-weight-bold">TODO LIST</h1>
 
-<form id="create">
-    <label for="todo">TODO : </label>
-    <input type="text" id="todo" name="content" placeholder="enter a todo">
-    <input type="submit" id="submit" value="CREATE">
-</form>
+    <div class="todoForm text-center">
+        <form id="create">
 
-<!-- todo list -->
-<div id="tasks">
-    <!-- task list -->
+            <div class="row">
+                <label for="todo" class="m-1 p-2 form-label font-weight-bold">TODO</label>
+                <input type="text" id="todo" name="content" placeholder="enter your todo" class="form-control"
+                       style="width:350px; left:80%">
+
+                <div class="createSubmit">
+                    <input type="submit" id="submit" value="CREATE" class="btn btn-dark">
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <!-- todo list -->
+    <div id="tasks">
+        <!-- task list -->
+    </div>
 </div>
 
 <script src="todo.js" type="text/javascript"></script>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+</script>
 </body>
 
 </html>

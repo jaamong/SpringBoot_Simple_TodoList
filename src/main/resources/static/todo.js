@@ -42,30 +42,46 @@ window.onload = function () {
 
             const taskEl = document.createElement("div");
             taskEl.idx = todoDto.id;
+            taskEl.classList.add('row'); //class="row"
 
             const taskContentEl = document.createElement("div");
 
             taskEl.appendChild(taskContentEl);
 
-            const taskInputEl = document.createElement("input");
+            const taskInputEl = document.createElement("input"); //입력된 내용
             taskInputEl.type = "text";
             taskInputEl.value = todoDto.content;
             taskInputEl.setAttribute("readonly", "readonly");
+            taskInputEl.classList.add('form-control');
 
             taskContentEl.appendChild(taskInputEl);
 
             const taskActionsEl = document.createElement("div");
 
+            const taskCheckDivEl = document.createElement("div");
+            taskCheckDivEl.classList.add('cbDiv')
+
+            const cbId = "cb" + todoDto.id;
+
             const taskCheckEl = document.createElement("input");
             taskCheckEl.type = "checkbox";
+            taskCheckEl.setAttribute("id", cbId);
+
+            const taskCheckLabelEl = document.createElement("label");
+            taskCheckLabelEl.setAttribute("for", cbId)
+
+            taskCheckDivEl.appendChild(taskCheckEl);
+            taskCheckDivEl.appendChild(taskCheckLabelEl);
 
             const taskEditEl = document.createElement("button");
             taskEditEl.innerHTML = "EDIT";
+            taskEditEl.classList.add('btn1');
 
             const taskDeleteEl = document.createElement("button");
             taskDeleteEl.innerHTML = "DELETE";
+            taskDeleteEl.classList.add('btn2');
 
-            taskActionsEl.appendChild(taskCheckEl);
+            taskActionsEl.appendChild(taskCheckDivEl);
             taskActionsEl.appendChild(taskEditEl);
             taskActionsEl.appendChild(taskDeleteEl);
 
@@ -73,7 +89,15 @@ window.onload = function () {
 
             listEl.appendChild(taskEl);
 
+            const br1 = document.createElement("br");
+            const br2 = document.createElement("br");
+            const br3 = document.createElement("br");
+            listEl.appendChild(br1);
+            listEl.appendChild(br2);
+            listEl.appendChild(br3);
+
             todoEl.value = "";
+
 
             //할 일 수정
             taskEditEl.addEventListener('click', () => {
@@ -95,12 +119,14 @@ window.onload = function () {
                 if (taskDeleteEl.innerHTML === "DELETE") {
                     listEl.removeChild(taskEl);
                     deleteTodo(taskEl.idx);
+                    listEl.removeChild(br1);
+                    listEl.removeChild(br2);
+                    listEl.removeChild(br3);
                 }
             })
 
             // 할 일 완료/취소
             taskCheckEl.addEventListener('click', () => {
-                taskCheckEl.classList.toggle("checked");
                 updateDone(taskEl.idx);
             })
         } catch (e) {
