@@ -11,7 +11,7 @@ import lombok.Setter;
 public class LoginResponseDto {
 
     private CustomUserDetails user;
-    private String token;
+    private TokenDto token;
 
     @Override
     public String toString() {
