@@ -1,18 +1,27 @@
 package com.jaamong.todo.jwt;
 
 
+import com.jaamong.todo.dto.TokenDto;
+import com.jaamong.todo.dto.error.CustomErrorCode;
+import com.jaamong.todo.entity.RefreshToken;
+import com.jaamong.todo.redis.RedisUtil;
+import com.jaamong.todo.repository.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -20,9 +29,18 @@ public class JwtTokenUtils {
 
     private final Key signingKey;
     private final JwtParser jwtParser;
+    private final RedisUtil redisUtil;
+    private final RefreshTokenRepository rtRepository;
 
-    public JwtTokenUtils(@Value("${jwt.secretKey}") String jwtSecret) {
+
+    private static final long ACCESS_TIME = 60 * 1000L;
+    private static final long REFRESH_TIME = 2 * 60 * 1000L;
+
+    public JwtTokenUtils(@Value("${jwt.secretKey}") String jwtSecret, RedisUtil redisUtil, RefreshTokenRepository rtRepository) {
         log.info("jwtSecret: {}", jwtSecret);
+
+        this.redisUtil = redisUtil;
+        this.rtRepository = rtRepository;
 
         this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         this.jwtParser = Jwts
@@ -34,17 +52,32 @@ public class JwtTokenUtils {
     /**
      * 주어진 사용자 정보를 바탕으로 JWT을 문자열로 생성
      */
-    public String generateToken(UserDetails userDetails) {
+    public TokenDto generateToken(UserDetails userDetails) {
 
-        Claims jwtClaims = Jwts.claims()
+        // --- Access Token ---
+        Claims accessJwtClaims = Jwts.claims()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(Date.from(Instant.now()))
-                .setExpiration(Date.from(Instant.now().plusSeconds(3600)));
+                .setExpiration(Date.from(Instant.now().plusSeconds(ACCESS_TIME)));
 
-        return Jwts.builder()
-                .setClaims(jwtClaims)
+        String accessToken = Jwts.builder()
+                .setClaims(accessJwtClaims)
                 .signWith(signingKey)
                 .compact();
+
+        // --- Refresh Token ---
+        Claims refreshJwtClaims = Jwts.claims()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(Date.from(Instant.now().plusSeconds(REFRESH_TIME)));
+
+        String refreshToken = Jwts.builder()
+                .setClaims(refreshJwtClaims)
+                .signWith(signingKey)
+                .compact();
+
+        //generate Token(AT+RT)
+        return new TokenDto(accessToken, refreshToken);
     }
 
     /**
