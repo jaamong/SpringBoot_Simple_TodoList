@@ -48,6 +48,17 @@ public class AuthenticationController {
     }
 
     /**
+     * redis - blackList 등록
+     */
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PostMapping("/logout/{userId}")
+    public void logout(@PathVariable("userId") Long userId, @RequestHeader("Authorization") String accessToken) {
+        log.info("[logout] request here");
+        userService.logout(accessToken, userId);
+        log.info("[logout] user: {}", userId);
+    }
+
+    /**
      * 인증이 필요한 URL
      */
     @PostMapping("/secured")

@@ -3,6 +3,9 @@ package com.jaamong.todo.service;
 import com.jaamong.todo.dto.UserLoginRequestDto;
 import com.jaamong.todo.entity.CustomUserDetails;
 import com.jaamong.todo.entity.Role;
+import com.jaamong.todo.jwt.JwtTokenUtils;
+import com.jaamong.todo.redis.RedisUtil;
+import com.jaamong.todo.repository.RefreshTokenRepository;
 import com.jaamong.todo.repository.RoleRepository;
 import com.jaamong.todo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.jaamong.todo.dto.error.CustomErrorCode.*;
@@ -33,7 +37,10 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final RefreshTokenRepository rtRepository;
     private final PasswordEncoder encoder;
+    private final JwtTokenUtils jwtTokenUtils;
+    private final RedisUtil redisUtil;
 
     @Override
     public UserDetails loadUserByUsername(String username) {
@@ -77,6 +84,19 @@ public class UserService implements UserDetailsService {
                 .username(dto.getUsername())
                 .password(dto.getPassword())
                 .build();
+    }
+
+    @Transactional
+    public void logout(String accessToken, Long userId) {
+        CustomUserDetails user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND_USER.name()));
+
+        rtRepository.deleteRefreshTokenByUsername(user.getUsername()); //refresh token 삭제
+
+        String token = accessToken.split(" ")[1];
+        int expiration = (int) jwtTokenUtils.getExpiration(token); //access token 만료시간 조회
+
+        redisUtil.setBlackList(token, "accessToken", expiration); //redis에 accessToken 사용 못하도록 등록
     }
 
     private boolean existsByUsername(String username) {

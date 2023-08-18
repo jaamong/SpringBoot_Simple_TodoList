@@ -98,16 +98,38 @@ public class JwtTokenUtils {
      * JWT가 유효한지 판단하는 메소드
      * - JJWT 라이브러리에서는 JWT를 해석하는 과정에서 유효하지 않으면 예외 발생
      */
-    public boolean validate(String token) {
+    public boolean validate(String token, String type) {
 
         try {
             //유효한 JWT -> true
             jwtParser.parseClaimsJws(token); //parseClaimsJws : 암호화된 JWT를 해석
+
+            //access token이 redis에 있으면 이미 로그아웃 상태
+            isLogout(token, type);
+
             return true;
+        } catch (ResponseStatusException e) {
+            log.warn("[JwtTokenUtils] already logout in validate()");
+            throw e;
         } catch (Exception e) {
-            log.warn("[JwtTokenUtils] invalid JWT in validate()");
+            log.warn("[JwtTokenUtils] invalid JWT in validate() : ", e);
             return false;
         }
+    }
+
+    private void isLogout(String token, String type) {
+        if (type.equals("AT") && redisUtil.hasKeyBlackList(token)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, CustomErrorCode.ALREADY_LOGOUT_USER.name());
+        }
+    }
+
+    /**
+     * JWT 토큰 만료시간
+     */
+    public long getExpiration(String accessToken) {
+        Date expiration = jwtParser.parseClaimsJws(accessToken).getBody().getExpiration();
+        long now = new Date().getTime();
+        return expiration.getTime() - now;
     }
 
     /**
