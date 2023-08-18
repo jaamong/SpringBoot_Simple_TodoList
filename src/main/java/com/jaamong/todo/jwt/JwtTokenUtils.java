@@ -80,6 +80,20 @@ public class JwtTokenUtils {
         return new TokenDto(accessToken, refreshToken);
     }
 
+    @Transactional
+    public void checkAndUpdateRefreshToken(String username, TokenDto token) {
+
+        Optional<RefreshToken> refreshToken = rtRepository.findByUsername(username);
+
+        //RT 있으면 새 토큰 발급 후 업데이트
+        if (refreshToken.isPresent()) {
+            rtRepository.save(refreshToken.get().updateToken(token.getRefreshToken()));
+        } else { //없으면 재발급 후 DB에 저장
+            RefreshToken newRT = new RefreshToken(token.getRefreshToken(), username);
+            rtRepository.save(newRT);
+        }
+    }
+
     /**
      * JWT가 유효한지 판단하는 메소드
      * - JJWT 라이브러리에서는 JWT를 해석하는 과정에서 유효하지 않으면 예외 발생
