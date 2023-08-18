@@ -29,6 +29,15 @@ spring:
     cache: false
     suffix: .html # 파일 확장자
 
+  #Redis Cache
+  redis:
+    host: localhost
+    port: 6379
+    pool:
+      min-idle: 0
+      max-idle: 8
+      max-active: 8
+
 jwt:
   secretKey: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesasdfqve
 
