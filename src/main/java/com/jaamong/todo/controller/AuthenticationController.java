@@ -1,10 +1,8 @@
 package com.jaamong.todo.controller;
 
-import com.jaamong.todo.dto.LoginResponseDto;
-import com.jaamong.todo.dto.UserLoginRequestDto;
-import com.jaamong.todo.dto.UserRegisterRequestDto;
-import com.jaamong.todo.jwt.JwtTokenUtils;
+import com.jaamong.todo.dto.*;
 import com.jaamong.todo.entity.CustomUserDetails;
+import com.jaamong.todo.jwt.JwtTokenUtils;
 import com.jaamong.todo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,11 +38,13 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody UserLoginRequestDto dto) {
         CustomUserDetails user = userService.validateUser(dto);
-        String token = jwtTokenUtils.generateToken(user);
 
-        log.info("[login] user: {}, generated token: {}", user.toString(), token);
+        TokenDto tokenDto = jwtTokenUtils.generateToken(user);
+        jwtTokenUtils.checkAndUpdateRefreshToken(user.getUsername(), tokenDto);
 
-        return ResponseEntity.ok(new LoginResponseDto(user, token));
+        log.info("[login] user: {}, generated token: {}", user.toString(), tokenDto.getAccessToken());
+
+        return ResponseEntity.ok(new LoginResponseDto(user, tokenDto));
     }
 
     /**
