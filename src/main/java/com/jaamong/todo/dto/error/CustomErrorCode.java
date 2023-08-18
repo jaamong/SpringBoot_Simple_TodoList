@@ -7,6 +7,8 @@ public enum CustomErrorCode {
     NOT_FOUND_USER,
     INVALID_PASSWORD,
 
+    ALREADY_LOGOUT_USER,
+
     //Todo
     NOT_EXISTS_TODO
 }
