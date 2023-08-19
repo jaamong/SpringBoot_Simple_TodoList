@@ -28,7 +28,9 @@ document.getElementById('login').addEventListener('submit', async (event) => {
                 alert("아이디 또는 비밀번호를 잘못 입력했습니다.");
 
         } else {
-            localStorage.setItem('token', response.token) //로컬 스토리지에 token 설정
+            //로컬 스토리지에 JWT 설정
+            localStorage.setItem('accessToken', response.token.accessToken)
+            localStorage.setItem('refreshToken', response.token.refreshToken)
             localStorage.setItem('userId', response.user.id)
 
             location.href = 'todo.html';
