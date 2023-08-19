@@ -1,10 +1,36 @@
 window.onload = function () {
     const todoListUl = document.getElementById('todo-list-ul');
 
-    const token = localStorage.getItem('token');
+    const accessToken = localStorage.getItem('accessToken');
+    const refreshToken = localStorage.getItem('refreshToken');
     const userId = localStorage.getItem('userId');
 
     readAll(); //페이지 첫 로드 시에만 호출, 그 이후로는 싱글 호출
+
+    //로그아웃
+    document.getElementById('logout').addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        try {
+            const promise = await fetch(`/auth/logout/${userId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Authorization-Expiration': 'ExpRTkn' + refreshToken
+                }
+            })
+
+            if (!promise.ok) {
+                console.log("[logout] fetch fail")
+            } else {
+                //로그아웃 페이지로 이동
+                location.href = 'logout.html';
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    })
 
     //새로운 todo 생성
     document.getElementById('create').addEventListener('submit', async (event) => {
@@ -21,7 +47,8 @@ window.onload = function () {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
+                        'Authorization': 'Bearer ' + accessToken,
+                        'Authorization-Expiration' : 'ExpRTkn' + refreshToken
                     },
                     body: JSON.stringify({
                         content: todoElValue,
@@ -140,7 +167,8 @@ window.onload = function () {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'Bearer ' + accessToken,
+                'Authorization-Expiration' : 'ExpRTkn' + refreshToken
             }
         })
 
@@ -159,7 +187,8 @@ window.onload = function () {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Authorization-Expiration' : 'ExpRTkn' + refreshToken
                 }
             })
             .catch((error) => console.log(error.message))
@@ -172,7 +201,8 @@ window.onload = function () {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Authorization-Expiration' : 'ExpRTkn' + refreshToken
                 },
                 body: JSON.stringify(content)
             })
@@ -185,7 +215,8 @@ window.onload = function () {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Authorization-Expiration' : 'ExpRTkn' + refreshToken
                 }
             })
             .catch((error) => console.log(error.message))

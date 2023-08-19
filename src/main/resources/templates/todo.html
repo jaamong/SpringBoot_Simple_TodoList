@@ -21,6 +21,12 @@
             min-height: 30px;
         }
 
+        .logout-btn {
+            position: absolute;
+            top: 3%;
+            left: 95%;
+        }
+
         .todoForm {
             position: absolute;
             top: 22%;
@@ -103,12 +109,19 @@
             min-height: 30px;
             min-width: 60px;
         }
+
     </style>
 </head>
 
 <body>
 <div class="container">
     <h1 class="m-5 text-left font-weight-bold">TODO LIST</h1>
+
+    <div class="logout-btn">
+        <button type="button" id="logout" class="btn btn-sm" style="font-size:8%; color: #848484; border-color: #A4A4A4">
+            Logout
+        </button>
+    </div>
 
     <div class="todoForm text-center">
         <form id="create">
