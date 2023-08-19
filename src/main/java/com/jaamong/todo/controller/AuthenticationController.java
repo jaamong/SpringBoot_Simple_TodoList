@@ -53,9 +53,8 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/logout/{userId}")
     public void logout(@PathVariable("userId") Long userId, @RequestHeader("Authorization") String accessToken) {
-        log.info("[logout] request here");
         userService.logout(accessToken, userId);
-        log.info("[logout] user: {}", userId);
+        log.info("[logout] user: {} successfully logged out", userId);
     }
 
     /**
