@@ -6,10 +6,9 @@ import com.jaamong.todo.dto.error.CustomErrorCode;
 import com.jaamong.todo.entity.RefreshToken;
 import com.jaamong.todo.redis.RedisUtil;
 import com.jaamong.todo.repository.RefreshTokenRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -108,18 +107,27 @@ public class JwtTokenUtils {
             isLogout(token, type);
 
             return true;
-        } catch (ResponseStatusException e) {
-            log.warn("[JwtTokenUtils] already logout in validate()");
-            throw e;
-        } catch (Exception e) {
-            log.warn("[JwtTokenUtils] invalid JWT in validate() : ", e);
+        } catch (ExpiredJwtException e) {
+            log.warn("[JwtTokenUtils - validate] expired JWT : {}", e.getMessage());
+            return false;
+        } catch (UnsupportedJwtException e) {
+            log.warn("[JwtTokenUtils - validate] unsupported JWT format/configuration : {}", e.getMessage());
+            return false;
+        } catch (MalformedJwtException e) {
+            log.warn("[JwtTokenUtils - validate] not correctly constructed JWT : {}", e.getMessage());
+            return false;
+        } catch (SignatureException e) {
+            log.warn("[JwtTokenUtils - validate] calculating a signature or verifying an existing signature of a JWT failed : {}", e.getMessage());
+            return false;
+        } catch (IllegalArgumentException e) {
+            log.warn("[JwtTokenUtils - validate] JWT claims string is empty : {}", e.getMessage());
             return false;
         }
     }
 
     private void isLogout(String token, String type) {
         if (type.equals("AT") && redisUtil.hasKeyBlackList(token)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, CustomErrorCode.ALREADY_LOGOUT_USER.name());
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, CustomErrorCode.ALREADY_LOGOUT_USER.name());
         }
     }
 
