@@ -318,6 +318,6 @@ select * from (select * from todo where todo.user.id = userId) where todo.id = t
 
 <h3>Back</h3>
 
-:one: 로그아웃 기능 구현
+:one: 로그아웃 기능 구현 (완료)
 
 * `Access Token`, `Refresh Token` 활용
