@@ -1,5 +1,6 @@
 package com.jaamong.todo.config;
 
+import com.jaamong.todo.jwt.JwtExceptionHandlerFilter;
 import com.jaamong.todo.jwt.JwtTokenFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +20,11 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
+    private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
 
-    public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfig(JwtTokenFilter jwtTokenFilter, JwtExceptionHandlerFilter jwtExceptionHandlerFilter) {
         this.jwtTokenFilter = jwtTokenFilter;
+        this.jwtExceptionHandlerFilter = jwtExceptionHandlerFilter;
     }
 
     /**
@@ -40,6 +43,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtTokenFilter, AuthorizationFilter.class)
+                .addFilterBefore(jwtExceptionHandlerFilter, JwtTokenFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
