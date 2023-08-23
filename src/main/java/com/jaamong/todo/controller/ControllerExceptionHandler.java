@@ -16,7 +16,7 @@ public class ControllerExceptionHandler {
 
     //입력 파라미터 검증 (not using)
     @ExceptionHandler
-    public ResponseEntity<ErrorMessageDto> handleArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorMessageDto> handleArgumentNotValidException(final MethodArgumentNotValidException e) {
         ErrorMessageDto message = new ErrorMessageDto(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         log.info("[MethodArgumentNotValidException] {}", message.getMessage());
         return ResponseEntity.status(e.getStatusCode()).body(message);
@@ -24,7 +24,7 @@ public class ControllerExceptionHandler {
 
     //ResponseStatusException
     @ExceptionHandler
-    public ResponseEntity<ErrorMessageDto> handlerResponseStatusException(ResponseStatusException e) {
+    public ResponseEntity<ErrorMessageDto> handlerResponseStatusException(final ResponseStatusException e) {
         String split = e.getMessage().split("\\s")[2];
         ErrorMessageDto message = new ErrorMessageDto(split);
         log.info("[ResponseStatusException] {}", split);
@@ -33,7 +33,7 @@ public class ControllerExceptionHandler {
 
     //UsernameNotFoundException
     @ExceptionHandler
-    public ResponseEntity<ErrorMessageDto> handlerUsernameNotFoundException(UsernameNotFoundException e) {
+    public ResponseEntity<ErrorMessageDto> handlerUsernameNotFoundException(final UsernameNotFoundException e) {
         ErrorMessageDto message = new ErrorMessageDto(e.getMessage());
         log.info("[UsernameNotFoundException] {}", message.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
