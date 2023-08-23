@@ -24,8 +24,9 @@ window.onload = function () {
             if (!promise.ok) {
                 console.log("[logout] fetch fail")
             } else {
-                //로그아웃 페이지로 이동
-                location.href = 'logout.html';
+                //성공적으로 로그아웃이 되면 로그인 페이지로 이동
+                alert("정상적으로 로그아웃이 되었습니다.\n확인 버튼을 누르면 로그인 페이지로 이동합니다.");
+                location.href = 'login.html';
             }
         } catch (e) {
             console.log(e);
@@ -163,21 +164,35 @@ window.onload = function () {
 
     //모든 todo 불러오기
     async function readAll() {
-        const promise = await fetch(`/users/${userId}/todos`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken,
-                'Authorization-Expiration' : 'ExpRTkn' + refreshToken
-            }
-        })
+        await fetch(`/users/${userId}/todos`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                    'Authorization-Expiration': 'ExpRTkn' + refreshToken
+                }
+            })
+            .then(response => {
+                console.log(response);
+                return response.json()
+            })
+            .then(json => {
+                console.log(json);
 
-        const contentList = await promise.json();
-        console.log(contentList);
-
-        for (let key of contentList) {
-            todoListUl.innerHTML = key.content;
-        }
+                //로그아웃한 사용자가 접근한 경우, 로그인 화면으로 보내기
+                if (json.message === "ALREADY_LOGOUT_USER") {
+                    alert("다시 로그인한 후 이용해 주세요");
+                    location.href = 'login.html';
+                } else { //정상 접근
+                    console.log(json)
+                    for (let key of json) {
+                        todoListUl.innerHTML = key.content;
+                    }
+                }
+            })
+            .catch(error => {
+                console.log(error)
+            })
     }
 
     //todo done update 함수 (fetch)
@@ -188,7 +203,7 @@ window.onload = function () {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + accessToken,
-                    'Authorization-Expiration' : 'ExpRTkn' + refreshToken
+                    'Authorization-Expiration': 'ExpRTkn' + refreshToken
                 }
             })
             .catch((error) => console.log(error.message))
@@ -202,7 +217,7 @@ window.onload = function () {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + accessToken,
-                    'Authorization-Expiration' : 'ExpRTkn' + refreshToken
+                    'Authorization-Expiration': 'ExpRTkn' + refreshToken
                 },
                 body: JSON.stringify(content)
             })
@@ -216,7 +231,7 @@ window.onload = function () {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'Bearer ' + accessToken,
-                    'Authorization-Expiration' : 'ExpRTkn' + refreshToken
+                    'Authorization-Expiration': 'ExpRTkn' + refreshToken
                 }
             })
             .catch((error) => console.log(error.message))
