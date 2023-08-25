@@ -75,8 +75,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
                     // DB에 저장된 토큰과 일치하는지
                     String username = jwtTokenUtils.parseClaims(accessToken).getSubject(); //JWT에서 subejct(사용자 이름/principal) 가져오기
-                    Optional<RefreshToken> OptRT = refreshTokenRepository.findByUsername(username);
-                    boolean isEqual = OptRT.isPresent() && refreshToken.equals(OptRT.get());
+                    Optional<RefreshToken> optRT = refreshTokenRepository.findByUsername(username);
+                    boolean isEqual = optRT.isPresent() && refreshToken.equals(optRT.get());
 
                     if (isEqual) { //RT 일치
 
