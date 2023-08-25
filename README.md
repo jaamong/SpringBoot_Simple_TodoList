@@ -175,11 +175,26 @@ todo
 
 <h2>회고</h2>
 
-<h3>:hatching_chick: 새로운 시도 - JavaScript</h3>
+<h3>:hatching_chick: 새로운 시도</h3>
+
+:one: ***JavaScript***
 
 자바 스크립트는 이번 프로젝트를 통해 처음 사용하게 되었다. 프로젝트 초기에는 `Thymeleaf`로 `view`를 간단히 끝냈는데, 토큰을 활용한 로그인을 도입하면서 `"토큰을 어떻게 주고받을 수 있을까?"`를
 고민하다보니 자바 스크립트를 도입하게 되었다.
 처음 사용하다보니 많이 헤맸지만, 적용한 결과를 보면서 뿌듯했다.
+
+<br>
+
+
+:two: ***Redis와 로그아웃***
+
+JWT(AccessToken, Refresh Token)를 사용하여 로그아웃을 구현하기 위해서는 `Access Token`이 만료될 때까지 별도로 저장할 공간이 필요했다. 또한 저장하고 토큰이 만료가 되면 알아서 삭제가 되길 원했다.  
+`Redis`는 `In-memory Database`로 위에 요청사항들을 해결하는데 적합하다. 덧붙여 `Redis`는 `Key-Value`로 데이터를 관리하는 `NoSQL`로 이런 류의 데이터 관리에도 편리하다. <br>
+
+최종적으로 이 프로젝트에서 `Redis`는 아래와 같은 용도로 사용되었다.
+- 로그아웃 요청 시 `BlackTemplate`로 명명한 `Redis` 저장 공간에 헤더로 들어온 `Access Token`을 저장 
+- 로그인/회원가입이 아닌 기능을 요청할 때 요청 헤더에 담긴 `Access Token`이 이미 `BlackTemplate`에 저장된 상태인지 검증 
+
 
 <br>
 
