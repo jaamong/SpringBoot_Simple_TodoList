@@ -6,7 +6,7 @@
 
 1. [프로젝트 소개](#프로젝트-소개)
 2. [시작 가이드](#시작-가이드)
-3. [실행 화면(업데이트 예정)](#실행-화면업데이트-예정)
+3. [실행 화면](#실행-화면)
 4. [기술 스택](#기술-스택)
 5. [프로젝트 구조](#프로젝트-구조)
 6. [회고](#회고)
@@ -323,11 +323,11 @@ select * from (select * from todo where todo.user.id = userId) where todo.id = t
 
 * 회원가입 시 이미 등록된 아이디를 입력했을 경우 (완료)
 * 로그인 시 잘못된 아이디/비밀번호를 입력했을 경우 (완료)
-* 투두를 등록하는 사용자가 조회했을 때 존재하지 않는 사용자인 경우
+* ~~투두를 등록하는 사용자가 조회했을 때 존재하지 않는 사용자인 경우~~
 
 <br>
 
-:three: todo 체크박스에 css 적용하기
+~~:three: todo 체크박스에 css 적용하기~~
 
 <br>
 
@@ -336,3 +336,15 @@ select * from (select * from todo where todo.user.id = userId) where todo.id = t
 :one: 로그아웃 기능 구현 (완료)
 
 * `Access Token`, `Refresh Token` 활용
+  
+:two: JWT를 쿠키에 저장하기 (view에 전달하는 형태 변경)
+
+* front에서도 localstorage에 저장하지 않도록 코드 변경
+
+<br>
+
+<h3>Infra</h3>
+
+* 배포를 위한 인프라 구축
+    * AWS EC2, Docker, MySQL
+    * :fire: Challenge : GitHub Actions 활용
