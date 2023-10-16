@@ -113,6 +113,7 @@ $ git clone https://github.com/jaamong/SpringBoot_Simple_TodoList.git
  <img src="https://img.shields.io/badge/Spring Boot 3.1.0-6DB33F?style=flat-square&logo=Spring Boot&logoColor=white">
  <img src="https://img.shields.io/badge/Spring Security 6.1.0-6DB33F?style=flat-square&logo=Spring Security&logoColor=white">
  <img src="https://img.shields.io/badge/Json Web Tokens-000000?style=flat-square&logo=Json Web Tokens&logoColor=white">
+ <img src="https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=Redis&logoColor=white">
  <img src="https://img.shields.io/badge/Hibernate-59666C?style=flat-square&logo=hibernate&logoColor=white">
  <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=flat-square&logo=Thymeleaf&logoColor=white">
  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=JavaScript&logoColor=white">
