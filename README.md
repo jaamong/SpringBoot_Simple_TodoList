@@ -45,6 +45,7 @@
 
 * [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk17-linux)
 * [H2 Database 2.1.214](http://www.h2database.com/html/download.html)
+* [Redis](https://redis.io/download/)
 
 <br>
 
@@ -58,6 +59,13 @@ $ git clone https://github.com/jaamong/SpringBoot_Simple_TodoList.git
 
 <h3>실행</h3>
 프로그램을 로컬 환경에서 실행하는 방법입니다.
+
+```text
+📌 Notice
+  - 프로그램 실행 전 Redis를 실행시켜야 합니다.
+  - 프로그램 내에 설정된 Redis의 포트는 6379 입니다.
+```
+<br>
 
 1. 터미널 창을 열고 프로젝트를 클론받은 위치로 이동합니다.
 2. 터미널에 아래 명령어를 입력하여 프로젝트를 빌드합니다.
